@@ -24,7 +24,7 @@ android {
 
         debug {
             buildConfigField 'String', "BASE_URL", '"https://api.themoviedb.org/3/"'
-            buildConfigField 'String', "BASE_URL_IMAGE", '"https://image.tmdb.org/t/p/original/"'
+            buildConfigField 'String', "BASE_URL_IMAGE", '"https://image.tmdb.org/t/p/w500/"'
             buildConfigField 'String', "MOVIE_API_KEY", '"7e6dc9e445f1edd16330cb045b7ba4c0"'
         }
     }
@@ -35,6 +35,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
     }
 }
 

@@ -5,9 +5,9 @@ package id.buaja.data.utils
  */
 
 object Constant {
-    val language = "en-US"
-    val sortBy = "popularity.desc"
-    val includeAdult = "false"
-    val includeVideo = "false"
-    val page = "1"
+    const val language = "en-US"
+    const val sortBy = "popularity.desc"
+    const val includeAdult = "false"
+    const val includeVideo = "false"
+    const val page = "1"
 }

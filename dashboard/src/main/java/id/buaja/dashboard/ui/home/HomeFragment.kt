@@ -1,24 +1,44 @@
 package id.buaja.dashboard.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import id.buaja.dashboard.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
+import id.buaja.dashboard.databinding.FragmentHomeBinding
+import id.buaja.dashboard.ui.home.adapter.BannerAdapter
+import id.buaja.dashboard.ui.home.adapter.ComingSoonAdapter
+import id.buaja.dashboard.ui.home.adapter.PopularAdapter
+import id.buaja.dashboard.utils.PeekingLinearLayoutManager
+import id.buaja.domain.model.Banner
+import id.buaja.domain.model.ComingSoon
+import id.buaja.domain.model.Popular
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel by viewModel<HomeViewModel>()
+
+    private var listBanner: MutableList<Banner> = mutableListOf()
+    private var bannerAdapter: BannerAdapter? = null
+
+    private var listPopular: MutableList<Popular> = mutableListOf()
+    private var popularAdapter: PopularAdapter? = null
+
+    private var listComingSoon: MutableList<ComingSoon> = mutableListOf()
+    private var comingSoonAdapter: ComingSoonAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -27,22 +47,45 @@ class HomeFragment : Fragment() {
         viewModel.getBanner()
         viewModel.apply {
             banner.observe(viewLifecycleOwner, {
-                it.map {
-                    Log.d("Sukses", it.backdropPath.toString())
-                }
+                listBanner.clear()
+                listBanner.addAll(it)
+                bannerAdapter?.notifyDataSetChanged()
             })
 
             popular.observe(viewLifecycleOwner, {
-                it.map {
-                    Log.d("Sukses Popular", it.backdropPath.toString())
-                }
+                listPopular.clear()
+                listPopular.addAll(it)
+                popularAdapter?.notifyDataSetChanged()
             })
 
             comingSoon.observe(viewLifecycleOwner, {
-                it.map {
-                    Log.d("Sukses Coming Soon", it.backdropPath.toString())
-                }
+                listComingSoon.clear()
+                listComingSoon.addAll(it)
+                comingSoonAdapter?.notifyDataSetChanged()
             })
+        }
+
+        bannerAdapter = BannerAdapter(listBanner)
+
+        popularAdapter = PopularAdapter(listPopular) {
+
+        }
+
+        comingSoonAdapter = ComingSoonAdapter(listComingSoon) {
+
+        }
+
+        with(binding) {
+            vpBanner.adapter = bannerAdapter
+            vpBanner.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+
+            rvPopular.layoutManager =
+                PeekingLinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            rvPopular.adapter = popularAdapter
+
+            rvComingSoon.layoutManager =
+                PeekingLinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            rvComingSoon.adapter = comingSoonAdapter
         }
     }
 }
