@@ -19,12 +19,14 @@ android {
         release {
             buildConfigField 'String', "BASE_URL", '"https://api.themoviedb.org/3/"'
             buildConfigField 'String', "BASE_URL_IMAGE", '"https://image.tmdb.org/t/p/original/"'
+            buildConfigField 'String', "BASE_URL_IMAGE_ORIGINAL", '"https://image.tmdb.org/t/p/original/"'
             buildConfigField 'String', "MOVIE_API_KEY", '"7e6dc9e445f1edd16330cb045b7ba4c0"'
         }
 
         debug {
             buildConfigField 'String', "BASE_URL", '"https://api.themoviedb.org/3/"'
             buildConfigField 'String', "BASE_URL_IMAGE", '"https://image.tmdb.org/t/p/w500/"'
+            buildConfigField 'String', "BASE_URL_IMAGE_ORIGINAL", '"https://image.tmdb.org/t/p/original/"'
             buildConfigField 'String', "MOVIE_API_KEY", '"7e6dc9e445f1edd16330cb045b7ba4c0"'
         }
     }

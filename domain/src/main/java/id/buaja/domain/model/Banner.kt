@@ -7,5 +7,5 @@ import id.buaja.domain.BuildConfig
  */
 
 data class Banner(val backdropPath: String? = null) {
-    val image = "${BuildConfig.BASE_URL_IMAGE}$backdropPath"
+    val image = "${BuildConfig.BASE_URL_IMAGE_ORIGINAL}$backdropPath"
 }

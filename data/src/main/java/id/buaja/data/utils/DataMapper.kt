@@ -30,7 +30,7 @@ object DataMapper {
         movieResponse.results?.map {
             listResult.add(
                 Popular(
-                    backdropPath = it.backdropPath
+                    backdropPath = it.posterPath
                 )
             )
         }
@@ -42,10 +42,10 @@ object DataMapper {
         val listResult: ArrayList<ComingSoon> = arrayListOf()
 
         movieResponse.results?.map {
-            it.backdropPath?.let { backdropPath ->
+            it.posterPath?.let { posterPath ->
                 listResult.add(
                     ComingSoon(
-                        backdropPath = backdropPath
+                        backdropPath = posterPath
                     )
                 )
             }

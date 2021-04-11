@@ -12,6 +12,8 @@ import id.buaja.dashboard.ui.home.adapter.BannerAdapter
 import id.buaja.dashboard.ui.home.adapter.ComingSoonAdapter
 import id.buaja.dashboard.ui.home.adapter.PopularAdapter
 import id.buaja.dashboard.utils.PeekingLinearLayoutManager
+import id.buaja.dashboard.utils.gone
+import id.buaja.dashboard.utils.visible
 import id.buaja.domain.model.Banner
 import id.buaja.domain.model.ComingSoon
 import id.buaja.domain.model.Popular
@@ -46,6 +48,20 @@ class HomeFragment : Fragment() {
 
         viewModel.getBanner()
         viewModel.apply {
+            loading.observe(viewLifecycleOwner, {
+                when (it) {
+                    true -> {
+                        binding.progress.visible()
+                        binding.scrollView.gone()
+                    }
+
+                    false -> {
+                        binding.progress.gone()
+                        binding.scrollView.visible()
+                    }
+                }
+            })
+
             banner.observe(viewLifecycleOwner, {
                 listBanner.clear()
                 listBanner.addAll(it)
@@ -87,5 +103,10 @@ class HomeFragment : Fragment() {
                 PeekingLinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             rvComingSoon.adapter = comingSoonAdapter
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
