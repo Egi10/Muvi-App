@@ -1,0 +1,10 @@
+apply from: "$rootDir/common.gradle"
+apply from: "$rootDir/shared_dependencies.gradle"
+
+dependencies {
+
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    // Domain
+    api project(":domain")
+}

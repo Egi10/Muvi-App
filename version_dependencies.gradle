@@ -1,0 +1,6 @@
+ext {
+    kotlin_version = "1.4.32"
+    koin_version = "2.2.2"
+    retrofit_version = "2.9.0"
+    coroutines_version = "1.4.3"
+}
