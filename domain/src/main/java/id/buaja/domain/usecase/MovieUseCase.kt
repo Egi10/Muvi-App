@@ -14,4 +14,5 @@ interface MovieUseCase {
     suspend fun getBanner(): Flow<ResultState<List<Banner>>>
     suspend fun getPopular(): Flow<ResultState<List<Popular>>>
     suspend fun getComingSoon(): Flow<ResultState<List<ComingSoon>>>
+    suspend fun getAllPopular(): Flow<ResultState<List<Popular>>>
 }

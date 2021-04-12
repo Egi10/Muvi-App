@@ -10,4 +10,5 @@ class MovieUseCaseImpl(private val repository: MovieRepository) : MovieUseCase {
     override suspend fun getBanner() = repository.getBanner()
     override suspend fun getPopular() = repository.getPopular()
     override suspend fun getComingSoon() = repository.getComingSoon()
+    override suspend fun getAllPopular() = repository.getAllPopular()
 }

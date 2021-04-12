@@ -3,6 +3,7 @@ package id.buaja.data.source.remote
 import id.buaja.data.BuildConfig
 import id.buaja.data.source.remote.network.ApiResult
 import id.buaja.data.source.remote.network.ApiService
+import id.buaja.data.source.remote.response.CreditsResponse
 import id.buaja.data.source.remote.response.MovieResponse
 import id.buaja.data.utils.Constant
 import kotlinx.coroutines.CoroutineDispatcher
@@ -69,9 +70,24 @@ class MovieRemoteDataSource(
                     "include_adult" to Constant.includeAdult,
                     "include_video" to Constant.includeVideo,
                     "page" to Constant.page,
-                    "year" to "${yearNow+1}"
+                    "year" to "${yearNow + 1}"
                 )
                 val response = apiService.getMovie(request)
+                emit(ApiResult.Success(response))
+            } catch (e: Exception) {
+                emit(ApiResult.Error(e))
+            }
+        }.flowOn(ioDispatcher)
+    }
+
+    suspend fun getCredits(idMovie: String): Flow<ApiResult<CreditsResponse>> {
+        return flow {
+            try {
+                val request = mapOf(
+                    "api_key" to BuildConfig.MOVIE_API_KEY,
+                    "language" to Constant.language
+                )
+                val response = apiService.getCredits(idMovie, request)
                 emit(ApiResult.Success(response))
             } catch (e: Exception) {
                 emit(ApiResult.Error(e))

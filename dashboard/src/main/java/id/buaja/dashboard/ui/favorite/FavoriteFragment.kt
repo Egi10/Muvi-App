@@ -9,23 +9,30 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import id.buaja.dashboard.R
+import id.buaja.dashboard.databinding.FragmentFavoriteBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteFragment : Fragment() {
+    private var _binding: FragmentFavoriteBinding? = null
+    private val binding get() = _binding!!
 
-    private lateinit var favoriteViewModel: FavoriteViewModel
+    private val viewModel by viewModel<FavoriteViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        favoriteViewModel =
-            ViewModelProvider(this).get(FavoriteViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_favorite, container, false)
-        val textView: TextView = root.findViewById(R.id.text_dashboard)
-        favoriteViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
-        return root
+    ): View {
+        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

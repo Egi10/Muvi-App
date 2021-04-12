@@ -1,6 +1,7 @@
 package id.buaja.dashboard.di
 
 import id.buaja.dashboard.ui.home.HomeViewModel
+import id.buaja.dashboard.ui.popular.PopularViewModel
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -16,5 +17,9 @@ val dashboardModule = module {
 
     viewModel {
         HomeViewModel(get())
+    }
+
+    viewModel {
+        PopularViewModel(get())
     }
 }
