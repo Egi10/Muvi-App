@@ -10,7 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import id.buaja.dashboard.databinding.FragmentHomeBinding
 import id.buaja.dashboard.ui.home.adapter.BannerAdapter
 import id.buaja.dashboard.ui.home.adapter.ComingSoonAdapter
-import id.buaja.dashboard.ui.home.adapter.PopularAdapter
+import id.buaja.dashboard.ui.home.adapter.PopularHomeAdapter
 import id.buaja.dashboard.utils.PeekingLinearLayoutManager
 import id.buaja.dashboard.utils.gone
 import id.buaja.dashboard.utils.visible
@@ -29,7 +29,7 @@ class HomeFragment : Fragment() {
     private var bannerAdapter: BannerAdapter? = null
 
     private var listPopular: MutableList<Popular> = mutableListOf()
-    private var popularAdapter: PopularAdapter? = null
+    private var popularHomeAdapter: PopularHomeAdapter? = null
 
     private var listComingSoon: MutableList<ComingSoon> = mutableListOf()
     private var comingSoonAdapter: ComingSoonAdapter? = null
@@ -71,7 +71,7 @@ class HomeFragment : Fragment() {
             popular.observe(viewLifecycleOwner, {
                 listPopular.clear()
                 listPopular.addAll(it)
-                popularAdapter?.notifyDataSetChanged()
+                popularHomeAdapter?.notifyDataSetChanged()
             })
 
             comingSoon.observe(viewLifecycleOwner, {
@@ -83,7 +83,7 @@ class HomeFragment : Fragment() {
 
         bannerAdapter = BannerAdapter(listBanner)
 
-        popularAdapter = PopularAdapter(listPopular) {
+        popularHomeAdapter = PopularHomeAdapter(listPopular) {
 
         }
 
@@ -97,7 +97,7 @@ class HomeFragment : Fragment() {
 
             rvPopular.layoutManager =
                 PeekingLinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            rvPopular.adapter = popularAdapter
+            rvPopular.adapter = popularHomeAdapter
 
             rvComingSoon.layoutManager =
                 PeekingLinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

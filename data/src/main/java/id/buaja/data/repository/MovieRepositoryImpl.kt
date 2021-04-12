@@ -2,7 +2,6 @@ package id.buaja.data.repository
 
 import id.buaja.data.source.remote.MovieRemoteDataSource
 import id.buaja.data.source.remote.network.ApiResult
-import id.buaja.data.source.remote.response.CreditsResponse
 import id.buaja.data.source.remote.response.MovieResponse
 import id.buaja.data.utils.DataMapper
 import id.buaja.data.utils.NetworkBoundResource
@@ -57,23 +56,35 @@ class MovieRepositoryImpl(private val remoteDataSource: MovieRemoteDataSource) :
             remoteDataSource.getPopular()
                 .flatMapMerge { resultMovie ->
                     val resultState: MutableList<Popular> = mutableListOf()
-                    val actor: MutableList<String> = mutableListOf()
 
-                    when(resultMovie) {
+                    when (resultMovie) {
                         is ApiResult.Success -> {
                             resultMovie.data.results?.map { result ->
                                 remoteDataSource.getCredits(result.id.toString())
                                     .collect { resultCast ->
-                                        collectCast(resultCast, actor)
-                                    }
+                                        when (resultCast) {
+                                            is ApiResult.Success -> {
+                                                val actor: MutableList<String> = mutableListOf()
 
-                                resultState.add(
-                                    Popular(
-                                        backdropPath = result.backdropPath,
-                                        title = result.title,
-                                        actor = actor.joinToString(separator = ", ")
-                                    )
-                                )
+                                                resultCast.data.cast?.map { listCash ->
+                                                    actor.add(listCash.name.toString())
+                                                }
+
+                                                resultState.add(
+                                                    Popular(
+                                                        idMovie = result.id,
+                                                        backdropPath = result.posterPath,
+                                                        title = result.title,
+                                                        actor = actor.joinToString(separator = ", ")
+                                                    )
+                                                )
+                                            }
+
+                                            is ApiResult.Error -> {
+                                                send(ResultState.Error(resultCast.exception))
+                                            }
+                                        }
+                                    }
                             }
                         }
 
@@ -85,27 +96,43 @@ class MovieRepositoryImpl(private val remoteDataSource: MovieRemoteDataSource) :
                         emit(resultState)
                     }
                 }
+                .flatMapMerge {
+                    val resultState: MutableList<Popular> = mutableListOf()
+
+                    it.map { popular ->
+                        remoteDataSource.getDetails(popular.idMovie.toString())
+                            .collect { detail ->
+                                when (detail) {
+                                    is ApiResult.Success -> {
+                                        val genreName: MutableList<String> = mutableListOf()
+                                        detail.data.genres?.map { genre ->
+                                            genreName.add(genre.name.toString())
+                                        }
+
+                                        resultState.add(
+                                            Popular(
+                                                idMovie = popular.idMovie,
+                                                backdropPath = popular.backdropPath,
+                                                title = popular.title,
+                                                actor = popular.actor,
+                                                genre = genreName.joinToString(separator = ", ")
+                                            )
+                                        )
+                                    }
+
+                                    is ApiResult.Error -> {
+                                        send(ResultState.Error(detail.exception))
+                                    }
+                                }
+                            }
+                    }
+                    return@flatMapMerge flow {
+                        emit(resultState)
+                    }
+                }
                 .collect {
                     send(ResultState.Success(it))
                 }
         }
     }
-
-    @ExperimentalCoroutinesApi
-    private fun collectCast(
-        resultCast: ApiResult<CreditsResponse>,
-        actor: MutableList<String>
-    ) {
-        when (resultCast) {
-            is ApiResult.Success -> {
-                resultCast.data.cast?.map { listCash ->
-                    actor.add(listCash.name.toString())
-                }
-            }
-            is ApiResult.Error -> {
-                actor.add("")
-            }
-        }
-    }
-
 }

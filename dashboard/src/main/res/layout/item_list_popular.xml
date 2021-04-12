@@ -4,20 +4,74 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="3.5dp"
-    android:layout_marginEnd="3.5dp">
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="9dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="9dp"
+    tools:background="@color/black_25272A">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="@string/popular_mov"
-        android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        app:layout_constraintDimensionRatio="W,1:0.65"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="W,1:0.75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars"/>
+        app:shapeAppearanceOverlay="@style/roundedImageView"
+        tools:src="@tools:sample/avatars" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_genre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_text"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:textColor="@android:color/black"
+        android:textSize="12sp"
+        app:fontFamily="@font/sfprotext_regular"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@id/iv_image"
+        app:layout_constraintEnd_toEndOf="@id/iv_image"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@id/iv_image"
+        tools:text="Action, Drama, Korea" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        app:fontFamily="@font/sfprotext_regular"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_image"
+        tools:text="Maze Runner - Guide to T…" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_cast"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/white_99FFFFFF"
+        android:textSize="12sp"
+        app:fontFamily="@font/sfprotext_regular"
+        app:layout_constraintEnd_toEndOf="@id/tv_title"
+        app:layout_constraintStart_toStartOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:text="Dylan O'Brien, Kaya Scodelario, Will Poulter " />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

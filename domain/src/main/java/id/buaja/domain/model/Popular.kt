@@ -7,9 +7,11 @@ import id.buaja.domain.BuildConfig
  */
 
 data class Popular(
+    val idMovie: Int?,
     val backdropPath: String? = null,
     val title: String? = null,
-    val actor: String? = null
+    val actor: String? = null,
+    val genre: String? = null
 ) {
     val image = "${BuildConfig.BASE_URL_IMAGE}$backdropPath"
 }

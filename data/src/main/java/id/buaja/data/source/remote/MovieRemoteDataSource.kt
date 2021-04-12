@@ -4,6 +4,7 @@ import id.buaja.data.BuildConfig
 import id.buaja.data.source.remote.network.ApiResult
 import id.buaja.data.source.remote.network.ApiService
 import id.buaja.data.source.remote.response.CreditsResponse
+import id.buaja.data.source.remote.response.DetailsResponse
 import id.buaja.data.source.remote.response.MovieResponse
 import id.buaja.data.utils.Constant
 import kotlinx.coroutines.CoroutineDispatcher
@@ -88,6 +89,21 @@ class MovieRemoteDataSource(
                     "language" to Constant.language
                 )
                 val response = apiService.getCredits(idMovie, request)
+                emit(ApiResult.Success(response))
+            } catch (e: Exception) {
+                emit(ApiResult.Error(e))
+            }
+        }.flowOn(ioDispatcher)
+    }
+
+    suspend fun getDetails(idMovie: String): Flow<ApiResult<DetailsResponse>> {
+        return flow {
+            try {
+                val request = mapOf(
+                    "api_key" to BuildConfig.MOVIE_API_KEY,
+                    "language" to Constant.language
+                )
+                val response = apiService.getDetails(idMovie, request)
                 emit(ApiResult.Success(response))
             } catch (e: Exception) {
                 emit(ApiResult.Error(e))
