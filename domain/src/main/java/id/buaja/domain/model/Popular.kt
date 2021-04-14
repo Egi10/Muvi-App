@@ -7,7 +7,7 @@ import id.buaja.domain.BuildConfig
  */
 
 data class Popular(
-    val idMovie: Int?,
+    val idMovie: Int,
     val backdropPath: String? = null,
     val title: String? = null,
     val actor: String? = null,

@@ -1,5 +1,6 @@
 package id.buaja.dashboard.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import id.buaja.dashboard.databinding.FragmentHomeBinding
+import id.buaja.dashboard.ui.detail.DetailMovieActivity
 import id.buaja.dashboard.ui.home.adapter.BannerAdapter
 import id.buaja.dashboard.ui.home.adapter.ComingSoonAdapter
 import id.buaja.dashboard.ui.home.adapter.PopularHomeAdapter
@@ -84,11 +86,11 @@ class HomeFragment : Fragment() {
         bannerAdapter = BannerAdapter(listBanner)
 
         popularHomeAdapter = PopularHomeAdapter(listPopular) {
-
+            toDetails(it.idMovie.toString())
         }
 
         comingSoonAdapter = ComingSoonAdapter(listComingSoon) {
-
+            toDetails(it.idMovie)
         }
 
         with(binding) {
@@ -103,6 +105,12 @@ class HomeFragment : Fragment() {
                 PeekingLinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             rvComingSoon.adapter = comingSoonAdapter
         }
+    }
+
+    private fun toDetails(idMovie: String) {
+        val intent = Intent(requireContext(), DetailMovieActivity::class.java)
+        intent.putExtra("id", idMovie)
+        startActivity(intent)
     }
 
     override fun onDestroyView() {

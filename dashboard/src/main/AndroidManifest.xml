@@ -3,9 +3,10 @@
     package="id.buaja.dashboard">
 
     <application>
+        <activity android:name=".ui.detail.DetailMovieActivity"></activity>
         <activity
             android:name=".DashboardActivity"
-            android:label="@string/title_activity_dashboard"></activity>
+            android:label="@string/title_activity_dashboard" />
     </application>
 
 </manifest>

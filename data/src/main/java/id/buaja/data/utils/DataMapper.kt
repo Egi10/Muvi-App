@@ -30,7 +30,7 @@ object DataMapper {
         movieResponse.results?.map {
             listResult.add(
                 Popular(
-                    idMovie = it.id,
+                    idMovie = it.id ?: 0,
                     backdropPath = it.posterPath
                 )
             )
@@ -46,6 +46,7 @@ object DataMapper {
             it.posterPath?.let { posterPath ->
                 listResult.add(
                     ComingSoon(
+                        idMovie = it.id.toString(),
                         backdropPath = posterPath
                     )
                 )

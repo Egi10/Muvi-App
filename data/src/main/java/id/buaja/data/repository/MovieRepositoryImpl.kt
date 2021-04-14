@@ -6,9 +6,7 @@ import id.buaja.data.source.remote.response.MovieResponse
 import id.buaja.data.utils.DataMapper
 import id.buaja.data.utils.NetworkBoundResource
 import id.buaja.domain.ResultState
-import id.buaja.domain.model.Banner
-import id.buaja.domain.model.ComingSoon
-import id.buaja.domain.model.Popular
+import id.buaja.domain.model.*
 import id.buaja.domain.repository.MovieRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -72,7 +70,7 @@ class MovieRepositoryImpl(private val remoteDataSource: MovieRemoteDataSource) :
 
                                                 resultState.add(
                                                     Popular(
-                                                        idMovie = result.id,
+                                                        idMovie = result.id ?: 0,
                                                         backdropPath = result.posterPath,
                                                         title = result.title,
                                                         actor = actor.joinToString(separator = ", ")
@@ -128,6 +126,67 @@ class MovieRepositoryImpl(private val remoteDataSource: MovieRemoteDataSource) :
                     }
                     return@flatMapMerge flow {
                         emit(resultState)
+                    }
+                }
+                .collect {
+                    send(ResultState.Success(it))
+                }
+        }
+    }
+
+    @FlowPreview
+    @ExperimentalCoroutinesApi
+    override suspend fun getDetails(idMovie: String): Flow<ResultState<Details>> {
+        return channelFlow {
+            remoteDataSource.getDetails(idMovie)
+                .flatMapMerge { resultDetail ->
+                    var details = Details()
+
+                    when(resultDetail) {
+                        is ApiResult.Success -> {
+                            val listCast: MutableList<Cast> = mutableListOf()
+                            remoteDataSource.getCredits(idMovie)
+                                .collect { credits ->
+                                    when(credits) {
+                                        is ApiResult.Success -> {
+                                            credits.data.cast?.map {
+                                                listCast.add(
+                                                    Cast(
+                                                        name = it.name.toString(),
+                                                        image = it.profilePath.toString()
+                                                    )
+                                                )
+                                            }
+
+                                            val listNameGenre: MutableList<String> = mutableListOf()
+
+                                            resultDetail.data.genres?.map {
+                                                listNameGenre.add(it.name.toString())
+                                            }
+                                            details = Details(
+                                                poster = resultDetail.data.posterPath.toString(),
+                                                title = resultDetail.data.title.toString(),
+                                                duration = resultDetail.data.releaseDate.toString(),
+                                                genre = listNameGenre.joinToString(separator = " . "),
+                                                overview = resultDetail.data.overview.toString(),
+                                                cast = listCast
+                                            )
+                                        }
+
+                                        is ApiResult.Error -> {
+                                            send(ResultState.Error(credits.exception))
+                                        }
+                                    }
+                                }
+                        }
+
+                        is ApiResult.Error -> {
+                            send(ResultState.Error(resultDetail.exception))
+                        }
+                    }
+
+                    return@flatMapMerge flow {
+                        emit(details)
                     }
                 }
                 .collect {

@@ -35,6 +35,10 @@ class ComingSoonAdapter(private val data: List<ComingSoon>, private val listener
         fun bind(item: ComingSoon, listener: (ComingSoon) -> Unit) {
             with(binding) {
                 ivImage.load(item.image)
+
+                container.setOnClickListener {
+                    listener.invoke(item)
+                }
             }
         }
     }

@@ -34,6 +34,10 @@ class PopularHomeAdapter(private val data: List<Popular>, private val listener: 
         fun bind(item: Popular, listener: (Popular) -> Unit) {
             with(binding) {
                 ivImage.load(item.image)
+
+                container.setOnClickListener {
+                    listener.invoke(item)
+                }
             }
         }
     }

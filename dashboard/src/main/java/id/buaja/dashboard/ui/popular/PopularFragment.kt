@@ -1,5 +1,6 @@
 package id.buaja.dashboard.ui.popular
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import id.buaja.dashboard.databinding.FragmentPopularBinding
+import id.buaja.dashboard.ui.detail.DetailMovieActivity
 import id.buaja.dashboard.ui.popular.adapter.PopularAdapter
 import id.buaja.dashboard.utils.hideKeyboard
 import id.buaja.domain.model.Popular
@@ -55,7 +57,9 @@ class PopularFragment : Fragment() {
         }
 
         popularAdapter = PopularAdapter(listPopular) {
-
+            val intent = Intent(requireContext(), DetailMovieActivity::class.java)
+            intent.putExtra("id", it.idMovie.toString())
+            startActivity(intent)
         }
 
         with(binding) {

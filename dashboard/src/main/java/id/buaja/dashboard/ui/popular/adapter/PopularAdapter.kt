@@ -15,7 +15,10 @@ import kotlin.collections.ArrayList
  * Created by Julsapargi Nursam on 4/12/21.
  */
 
-class PopularAdapter(private val data: ArrayList<Popular>, private val listener: (Popular) -> Unit) :
+class PopularAdapter(
+    private val data: ArrayList<Popular>,
+    private val listener: (Popular) -> Unit
+) :
     RecyclerView.Adapter<PopularAdapter.ViewHolder>(), Filterable {
 
     var dataFilter = ArrayList<Popular>()
@@ -43,7 +46,9 @@ class PopularAdapter(private val data: ArrayList<Popular>, private val listener:
                 } else {
                     val resultList = ArrayList<Popular>()
                     for (row in data) {
-                        if (row.title?.toLowerCase(Locale.ROOT)?.contains(charSearch.toLowerCase(Locale.ROOT)) == true) {
+                        if (row.title?.toLowerCase(Locale.ROOT)
+                                ?.contains(charSearch.toLowerCase(Locale.ROOT)) == true
+                        ) {
                             resultList.add(row)
                         }
                     }
@@ -71,6 +76,10 @@ class PopularAdapter(private val data: ArrayList<Popular>, private val listener:
                 tvTitle.text = item.title
                 tvCast.text = item.actor
                 tvGenre.text = item.genre
+
+                container.setOnClickListener {
+                    listener.invoke(item)
+                }
             }
         }
     }

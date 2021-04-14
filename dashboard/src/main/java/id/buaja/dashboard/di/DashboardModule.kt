@@ -1,5 +1,6 @@
 package id.buaja.dashboard.di
 
+import id.buaja.dashboard.ui.detail.DetailMovieViewModel
 import id.buaja.dashboard.ui.home.HomeViewModel
 import id.buaja.dashboard.ui.popular.PopularViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,5 +22,9 @@ val dashboardModule = module {
 
     viewModel {
         PopularViewModel(get())
+    }
+
+    viewModel {
+        DetailMovieViewModel(get())
     }
 }
