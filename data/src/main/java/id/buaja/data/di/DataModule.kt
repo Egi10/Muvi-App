@@ -1,7 +1,10 @@
 package id.buaja.data.di
 
+import androidx.room.Room
 import id.buaja.data.BuildConfig
 import id.buaja.data.repository.MovieRepositoryImpl
+import id.buaja.data.source.local.LocalMovieDataSource
+import id.buaja.data.source.local.room.MovieDatabase
 import id.buaja.data.source.remote.MovieRemoteDataSource
 import id.buaja.data.source.remote.network.ApiService
 import id.buaja.domain.repository.MovieRepository
@@ -41,7 +44,22 @@ val dataModule = module {
         MovieRemoteDataSource(get(), get())
     }
 
+    single {
+        LocalMovieDataSource(get())
+    }
+
     single<MovieRepository> {
-        MovieRepositoryImpl(get())
+        MovieRepositoryImpl(get(), get())
+    }
+
+    factory {
+        get<MovieDatabase>().movieDao()
+    }
+
+    single {
+        Room.databaseBuilder(
+            get(), MovieDatabase::class.java, "Movie.db"
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 }

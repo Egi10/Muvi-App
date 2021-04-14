@@ -1,5 +1,6 @@
 package id.buaja.data.repository
 
+import id.buaja.data.source.local.LocalMovieDataSource
 import id.buaja.data.source.remote.MovieRemoteDataSource
 import id.buaja.data.source.remote.network.ApiResult
 import id.buaja.data.source.remote.response.MovieResponse
@@ -16,14 +17,17 @@ import kotlinx.coroutines.flow.*
  * Created by Julsapargi Nursam on 4/11/21.
  */
 
-class MovieRepositoryImpl(private val remoteDataSource: MovieRemoteDataSource) : MovieRepository {
+class MovieRepositoryImpl(
+    private val remoteDataSource: MovieRemoteDataSource,
+    private val localMovieDataSource: LocalMovieDataSource
+) : MovieRepository {
     override suspend fun getBanner(): Flow<ResultState<List<Banner>>> =
         object : NetworkBoundResource<List<Banner>, MovieResponse>() {
             override suspend fun createCall() =
                 remoteDataSource.getBanner()
 
             override fun mapperData(data: MovieResponse) =
-                DataMapper.mapResponseToEntityBanner(data)
+                DataMapper.mapResponseToDomainBanner(data)
 
         }.asFlow()
 
@@ -33,7 +37,7 @@ class MovieRepositoryImpl(private val remoteDataSource: MovieRemoteDataSource) :
                 remoteDataSource.getPopular()
 
             override fun mapperData(data: MovieResponse) =
-                DataMapper.mapResponseToEntityPopular(data)
+                DataMapper.mapResponseToDomainPopular(data)
 
         }.asFlow()
 
@@ -43,7 +47,7 @@ class MovieRepositoryImpl(private val remoteDataSource: MovieRemoteDataSource) :
                 remoteDataSource.getComingSoon()
 
             override fun mapperData(data: MovieResponse) =
-                DataMapper.mapResponseToEntityComingSoon(data)
+                DataMapper.mapResponseToDomainComingSoon(data)
 
         }.asFlow()
 
@@ -142,12 +146,12 @@ class MovieRepositoryImpl(private val remoteDataSource: MovieRemoteDataSource) :
                 .flatMapMerge { resultDetail ->
                     var details = Details()
 
-                    when(resultDetail) {
+                    when (resultDetail) {
                         is ApiResult.Success -> {
                             val listCast: MutableList<Cast> = mutableListOf()
                             remoteDataSource.getCredits(idMovie)
                                 .collect { credits ->
-                                    when(credits) {
+                                    when (credits) {
                                         is ApiResult.Success -> {
                                             credits.data.cast?.map {
                                                 listCast.add(
@@ -164,6 +168,7 @@ class MovieRepositoryImpl(private val remoteDataSource: MovieRemoteDataSource) :
                                                 listNameGenre.add(it.name.toString())
                                             }
                                             details = Details(
+                                                idMovie = resultDetail.data.id.toString(),
                                                 poster = resultDetail.data.posterPath.toString(),
                                                 title = resultDetail.data.title.toString(),
                                                 duration = resultDetail.data.releaseDate.toString(),
@@ -189,9 +194,44 @@ class MovieRepositoryImpl(private val remoteDataSource: MovieRemoteDataSource) :
                         emit(details)
                     }
                 }
+                .flatMapMerge {
+                    val details: Details
+
+                    val getFavoriteById = localMovieDataSource.getFavoriteById(it.idMovie)
+                    val isFavorite = getFavoriteById.isNotEmpty()
+                    details = Details(
+                        idMovie = it.idMovie,
+                        poster = it.poster,
+                        title = it.title,
+                        duration = it.duration,
+                        genre = it.genre,
+                        overview = it.overview,
+                        cast = it.cast,
+                        inFavorite = isFavorite
+                    )
+
+                    return@flatMapMerge flow {
+                        emit(details)
+                    }
+                }
                 .collect {
                     send(ResultState.Success(it))
                 }
         }
     }
+
+    override suspend fun insertFavorite(details: Details) {
+        localMovieDataSource.insert(
+            DataMapper.mapResponseToEntity(details)
+        )
+    }
+
+    override suspend fun deleteFavorite(idMovie: String) {
+        localMovieDataSource.deleteFavoriteById(idMovie)
+    }
+
+    override suspend fun getFavorite(): Flow<List<MovieFavorite>> =
+        localMovieDataSource.getFavorite().map {
+            DataMapper.mapEntityToDomain(it)
+        }
 }

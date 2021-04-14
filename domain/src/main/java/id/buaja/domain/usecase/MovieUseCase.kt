@@ -1,10 +1,7 @@
 package id.buaja.domain.usecase
 
 import id.buaja.domain.ResultState
-import id.buaja.domain.model.Banner
-import id.buaja.domain.model.ComingSoon
-import id.buaja.domain.model.Details
-import id.buaja.domain.model.Popular
+import id.buaja.domain.model.*
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -17,4 +14,7 @@ interface MovieUseCase {
     suspend fun getComingSoon(): Flow<ResultState<List<ComingSoon>>>
     suspend fun getAllPopular(): Flow<ResultState<List<Popular>>>
     suspend fun getDetails(idMovie: String): Flow<ResultState<Details>>
+    suspend fun insertFavorite(details: Details)
+    suspend fun deleteFavorite(idMovie: String)
+    suspend fun getFavorite(): Flow<List<MovieFavorite>>
 }

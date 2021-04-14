@@ -26,6 +26,9 @@ class DetailMovieViewModel(
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
 
+    private val _successInsert = MutableLiveData<String>()
+    val successInsert: LiveData<String> get() = _successInsert
+
     fun getDetail(idMovie: String) {
         viewModelScope.launch(mainDispatcher) {
             useCase.getDetails(idMovie)
@@ -40,6 +43,22 @@ class DetailMovieViewModel(
                         }
                     }
                 }
+        }
+    }
+
+    fun insertFavorite(details: Details) {
+        viewModelScope.launch(mainDispatcher) {
+            useCase.insertFavorite(details)
+
+            _successInsert.postValue("Sukses Simpan Data")
+        }
+    }
+
+    fun deleteFavorite(idMovie: String) {
+        viewModelScope.launch(mainDispatcher) {
+            useCase.deleteFavorite(idMovie)
+
+            _successInsert.postValue("Berhasil Menghapus Data")
         }
     }
 }
