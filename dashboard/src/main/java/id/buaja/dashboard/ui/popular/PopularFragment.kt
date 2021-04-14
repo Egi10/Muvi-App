@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import id.buaja.dashboard.databinding.FragmentPopularBinding
 import id.buaja.dashboard.ui.popular.adapter.PopularAdapter
+import id.buaja.dashboard.utils.hideKeyboard
 import id.buaja.domain.model.Popular
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -19,7 +22,7 @@ class PopularFragment : Fragment() {
     private val viewModel by viewModel<PopularViewModel>()
 
     private var popularAdapter: PopularAdapter? = null
-    private val listPopular: MutableList<Popular> = mutableListOf()
+    private val listPopular: ArrayList<Popular> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,6 +64,17 @@ class PopularFragment : Fragment() {
 
             swipe.setOnRefreshListener {
                 viewModel.getAllFavorite()
+            }
+            
+            etSearch.addTextChangedListener {
+                popularAdapter?.filter?.filter(it.toString())
+            }
+
+            etSearch.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideKeyboard()
+                }
+                return@setOnEditorActionListener false
             }
         }
     }
